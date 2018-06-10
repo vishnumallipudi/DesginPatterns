@@ -11,16 +11,31 @@ namespace SOLIDPrinciples
     {
         static void Main(string[] args)
         {
-            var j = new Journal();
-            j.AddEntry("I cried today.");
-            j.AddEntry("I ate a bug.");
-            Console.WriteLine(j);
-            
+            var apple = new Product("Apple", Size.small, Color.orange);
+            var tree = new Product("Tree", Size.large, Color.yellow);
+            var house = new Product("House", Size.huge, Color.blue);
 
-            var p = new Persistence();
-            var filename = @"c:\temp\journal.txt";
-            p.SaveToFile(filename, j,true);
-            Process.Start(filename);
+            Product[] products = { apple, tree, house };
+
+            var pf = new ProductFilter();
+            Console.WriteLine("Orange Products(old):");
+            foreach (var product in pf.FilterByColor(products, Color.orange))
+            {
+                Console.WriteLine($" - {product.Name} is orange");
+            }
+
+            var bf = new BetterFilter();
+            Console.WriteLine("Orange Products(new):");
+            foreach (var item in bf.Filter(products, new ColorSpecification(Color.orange)))
+            {
+                Console.WriteLine($" - {item.Name} is orange");
+            }
+
+            foreach (var item in bf.Filter(products,
+                new AndSpecification(new ColorSpecification(Color.yellow),new SizeSpecification(Size.large))))
+            {
+                Console.WriteLine($" - {item.Name} is yellow and large");
+            }
 
             Console.ReadLine();
         }
